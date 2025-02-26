@@ -38,14 +38,18 @@
 
         private static async Task LogFailCount(string account, HttpClient httpClient)
         {
-            var failedCountResponse =
-                await httpClient.PostAsJsonAsync("api/failedCounter/GetFailedCount", account);
+            
+            var failedCount = await new FailCounter().GetFailedCount(account, httpClient);
+            new NLogAdapter().Info($"accountId:{account} failed times:{failedCount}");
+        }
+    }
 
-            failedCountResponse.EnsureSuccessStatusCode();
-
-            var failedCount = await failedCountResponse.Content.ReadAsAsync<int>();
+    internal class NLogAdapter
+    {
+        public void Info(string message)
+        {
             var logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Info($"accountId:{account} failed times:{failedCount}");
+            logger.Info(message);
         }
     }
 

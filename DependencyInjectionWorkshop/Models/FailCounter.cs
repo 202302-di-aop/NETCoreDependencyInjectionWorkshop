@@ -21,4 +21,15 @@ public class FailCounter
         isLockedResponse.EnsureSuccessStatusCode();
         return await isLockedResponse.Content.ReadAsAsync<bool>();
     }
+
+    public async Task<int> GetFailedCount(string account, HttpClient httpClient)
+    {
+        var failedCountResponse =
+            await httpClient.PostAsJsonAsync("api/failedCounter/GetFailedCount", account);
+
+        failedCountResponse.EnsureSuccessStatusCode();
+
+        var failedCount = await failedCountResponse.Content.ReadAsAsync<int>();
+        return failedCount;
+    }
 }
