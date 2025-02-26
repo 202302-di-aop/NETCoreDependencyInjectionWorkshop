@@ -2,7 +2,12 @@
 
 namespace DependencyInjectionWorkshop.Models;
 
-public class Sha256Adapter
+public interface IHash
+{
+    string GetHashResult(string password);
+}
+
+public class Sha256Adapter : IHash
 {
     [Obsolete("Obsolete")]
     public string GetHashResult(string password)

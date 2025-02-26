@@ -1,6 +1,11 @@
 ﻿namespace DependencyInjectionWorkshop.Models;
 
-public class OtpProxy
+public interface IOtpProxy
+{
+    Task<string> GetCurrentOtp(string account);
+}
+
+public class OtpProxy : IOtpProxy
 {
     public async Task<string> GetCurrentOtp(string account)
     {

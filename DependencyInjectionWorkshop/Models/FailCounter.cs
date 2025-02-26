@@ -1,6 +1,14 @@
 ﻿namespace DependencyInjectionWorkshop.Models;
 
-public class FailCounter
+public interface IFailCounter
+{
+    Task AddFailCount(string account);
+    Task<int> GetFailedCount(string account);
+    Task<bool> IsLocked(string account);
+    Task Reset(string account);
+}
+
+public class FailCounter : IFailCounter
 {
     private HttpClient _httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
 

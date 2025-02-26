@@ -2,11 +2,12 @@
 {
     public class AuthenticationService
     {
-        private readonly FailCounter _failCounter = new FailCounter();
-        private readonly OtpProxy _otpProxy = new OtpProxy();
+        private readonly IFailCounter _failCounter = new FailCounter();
+        private readonly IHash _hash = new Sha256Adapter();
+        private readonly IMyLogger _logger = new NLogAdapter();
+        private readonly INotification _notification = new SlackAdapter();
+        private readonly IOtpProxy _otpProxy = new OtpProxy();
         private readonly IProfileRepo _profileRepo = new ProfileRepo();
-        private readonly Sha256Adapter _sha256Adapter = new Sha256Adapter();
-        private readonly SlackAdapter _slackAdapter = new SlackAdapter();
 
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
@@ -18,7 +19,7 @@
             }
 
             var passwordFromDb = _profileRepo.GetPasswordFromDb(account);
-            var hashResult = _sha256Adapter.GetHashResult(password);
+            var hashResult = _hash.GetHashResult(password);
             var currentOtp = await _otpProxy.GetCurrentOtp(account);
             if (passwordFromDb == hashResult && otp == currentOtp)
             {
@@ -30,24 +31,15 @@
                 //失敗
                 await _failCounter.AddFailCount(account);
                 await LogFailCount(account);
-                _slackAdapter.Notify(account);
+                _notification.Notify(account);
                 return false;
             }
         }
 
-        private static async Task LogFailCount(string account)
+        private async Task LogFailCount(string account)
         {
-            var failedCount = await new FailCounter().GetFailedCount(account);
-            new NLogAdapter().Info($"accountId:{account} failed times:{failedCount}");
-        }
-    }
-
-    internal class NLogAdapter
-    {
-        public void Info(string message)
-        {
-            var logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Info(message);
+            var failedCount = await _failCounter.GetFailedCount(account);
+            _logger.Info($"accountId:{account} failed times:{failedCount}");
         }
     }
 
