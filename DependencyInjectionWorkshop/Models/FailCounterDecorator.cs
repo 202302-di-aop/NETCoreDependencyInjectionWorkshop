@@ -13,6 +13,12 @@ public class FailCounterDecorator : IAuthentication
 
     public async Task<bool> IsValid(string account, string password, string otp)
     {
+        var isLocked = await _failCounter.IsLocked(account);
+        if (isLocked)
+        {
+            throw new FailedTooManyTimesException() { Account = account };
+        }
+
         var isValid = await _authentication.IsValid(account, password, otp);
         if (isValid)
         {
@@ -20,24 +26,14 @@ public class FailCounterDecorator : IAuthentication
         }
         else
         {
-            await AddFailCount(account);
+            await _failCounter.AddFailCount(account);
         }
 
         return isValid;
     }
 
-    public Task AddFailCount(string account)
-    {
-        return _failCounter.AddFailCount(account);
-    }
-
     public Task<int> GetFailedCount(string account)
     {
         return _failCounter.GetFailedCount(account);
-    }
-
-    public Task<bool> IsLocked(string account)
-    {
-        return _failCounter.IsLocked(account);
     }
 }

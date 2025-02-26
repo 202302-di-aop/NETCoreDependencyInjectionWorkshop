@@ -13,7 +13,7 @@
         private readonly IOtpProxy _otpProxy;
 
         private readonly IProfileRepo _profileRepo;
-        // private readonly FailCounterDecorator _failCounterDecorator;
+        private readonly FailCounterDecorator _failCounterDecorator;
 
         public AuthenticationService(IFailCounter failCounter, IHash hash,
             IOtpProxy otpProxy, IProfileRepo profileRepo, IMyLogger logger)
@@ -39,11 +39,7 @@
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
         {
-            var isLocked = await _failCounter.IsLocked(account);
-            if (isLocked)
-            {
-                throw new FailedTooManyTimesException() { Account = account };
-            }
+            // await _failCounterDecorator.CheckAccountIsLocked(account);
 
             var passwordFromDb = _profileRepo.GetPasswordFromDb(account);
             var hashResult = _hash.GetHashResult(password);
