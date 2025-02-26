@@ -12,7 +12,7 @@
         public async Task<bool> IsValid(string account, string password, string otp)
         {
             var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
-            var isLocked = await IsLocked(account, httpClient);
+            var isLocked = await new FailCounter().IsLocked(account, httpClient);
             if (isLocked)
             {
                 throw new FailedTooManyTimesException() { Account = account };
@@ -34,14 +34,6 @@
                 _slackAdapter.Notify(account);
                 return false;
             }
-        }
-
-        private static async Task<bool> IsLocked(string account, HttpClient httpClient)
-        {
-            var isLockedResponse = await httpClient.PostAsJsonAsync("api/failedCounter/IsLocked", account);
-
-            isLockedResponse.EnsureSuccessStatusCode();
-            return await isLockedResponse.Content.ReadAsAsync<bool>();
         }
 
         private static async Task LogFailCount(string account, HttpClient httpClient)
