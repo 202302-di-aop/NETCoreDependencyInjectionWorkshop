@@ -20,20 +20,18 @@ namespace DependencyInjectionWorkshop.Models
                 throw new FailedTooManyTimesException() { Account = account };
             }
 
-            var passwordFromDb = GetPasswordFromDb(account); 
-            var hashResult = GetHashResult(password); 
+            var passwordFromDb = GetPasswordFromDb(account);
+            var hashResult = GetHashResult(password);
             var currentOtp = await GetCurrentOtp(account, httpClient);
             if (passwordFromDb == hashResult && otp == currentOtp)
             {
-                var resetResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Reset", account);
-                resetResponse.EnsureSuccessStatusCode();
+                await ResetFailCount(account, httpClient);
                 return true;
             }
             else
             {
                 //失敗
-                var addFailedCountResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Add", account);
-                addFailedCountResponse.EnsureSuccessStatusCode();
+                await AddFailCount(account, httpClient);
 
                 var failedCountResponse =
                     await httpClient.PostAsJsonAsync("api/failedCounter/GetFailedCount", account);
@@ -50,11 +48,10 @@ namespace DependencyInjectionWorkshop.Models
             }
         }
 
-        private static void Notify(string account)
+        private static async Task AddFailCount(string account, HttpClient httpClient)
         {
-            var message = $"{account} try to login fail.";
-            var slackClient = new SlackClient("my api token");
-            slackClient.PostMessage(response1 => { }, "my channel", message, "my bot name");
+            var addFailedCountResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Add", account);
+            addFailedCountResponse.EnsureSuccessStatusCode();
         }
 
         private static async Task<string> GetCurrentOtp(string account, HttpClient httpClient)
@@ -88,6 +85,19 @@ namespace DependencyInjectionWorkshop.Models
             }
 
             return passwordFromDb;
+        }
+
+        private static void Notify(string account)
+        {
+            var message = $"{account} try to login fail.";
+            var slackClient = new SlackClient("my api token");
+            slackClient.PostMessage(response1 => { }, "my channel", message, "my bot name");
+        }
+
+        private static async Task ResetFailCount(string account, HttpClient httpClient)
+        {
+            var resetResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Reset", account);
+            resetResponse.EnsureSuccessStatusCode();
         }
     }
 
