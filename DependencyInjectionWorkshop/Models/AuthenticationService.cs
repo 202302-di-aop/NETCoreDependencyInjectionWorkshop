@@ -11,22 +11,16 @@ namespace DependencyInjectionWorkshop.Models
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
         {
-            
             var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
             var isLockedResponse = await httpClient.PostAsJsonAsync("api/failedCounter/IsLocked", account);
 
             isLockedResponse.EnsureSuccessStatusCode();
             if (await isLockedResponse.Content.ReadAsAsync<bool>())
             {
-                throw new FailedTooManyTimesException(){Account = account};
+                throw new FailedTooManyTimesException() { Account = account };
             }
-            
-            string passwordFromDb;
-            using (var connection = new SqlConnection("my connection string"))
-            {
-                passwordFromDb = connection.Query<string>("spGetUserPassword", new { Id = account },
-                    commandType: CommandType.StoredProcedure).SingleOrDefault();
-            }
+
+            var passwordFromDb = GetPasswordFromDb(account);
 
             var crypt = new System.Security.Cryptography.SHA256Managed();
             var hash = new StringBuilder();
@@ -52,8 +46,7 @@ namespace DependencyInjectionWorkshop.Models
                 //失敗
                 var addFailedCountResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Add", account);
                 addFailedCountResponse.EnsureSuccessStatusCode();
-                
-                
+
                 var failedCountResponse =
                     await httpClient.PostAsJsonAsync("api/failedCounter/GetFailedCount", account);
 
@@ -62,13 +55,25 @@ namespace DependencyInjectionWorkshop.Models
                 var failedCount = await failedCountResponse.Content.ReadAsAsync<int>();
                 var logger = NLog.LogManager.GetCurrentClassLogger();
                 logger.Info($"accountId:{account} failed times:{failedCount}");
-                
+
                 var message = $"{account} try to login fail.";
                 var slackClient = new SlackClient("my api token");
                 slackClient.PostMessage(response1 => { }, "my channel", message, "my bot name");
 
                 return false;
             }
+        }
+
+        private static string GetPasswordFromDb(string account)
+        {
+            string passwordFromDb;
+            using (var connection = new SqlConnection("my connection string"))
+            {
+                passwordFromDb = connection.Query<string>("spGetUserPassword", new { Id = account },
+                    commandType: CommandType.StoredProcedure).SingleOrDefault();
+            }
+
+            return passwordFromDb;
         }
     }
 

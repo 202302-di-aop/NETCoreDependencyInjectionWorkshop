@@ -1,5 +1,4 @@
 ﻿using DependencyInjectionWorkshop.Models;
-using NUnit.Framework;
 
 namespace DependencyInjectionWorkshopTests
 {
@@ -14,6 +13,7 @@ namespace DependencyInjectionWorkshopTests
             // string password;
             // string otp;
             // authenticationService.IsValid(account, password, otp)
+            Assert.Inconclusive();
         }
     }
 }
