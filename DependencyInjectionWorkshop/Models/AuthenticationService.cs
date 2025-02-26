@@ -1,13 +1,12 @@
-﻿using System.Data;
-using System.Data.SqlClient;
-using System.Text;
-using Dapper;
+﻿using System.Text;
 using SlackAPI;
 
 namespace DependencyInjectionWorkshop.Models
 {
     public class AuthenticationService
     {
+        private readonly ProfileRepo _profileRepo = new ProfileRepo();
+
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
         {
@@ -18,7 +17,7 @@ namespace DependencyInjectionWorkshop.Models
                 throw new FailedTooManyTimesException() { Account = account };
             }
 
-            var passwordFromDb = GetPasswordFromDb(account);
+            var passwordFromDb = _profileRepo.GetPasswordFromDb(account);
             var hashResult = GetHashResult(password);
             var currentOtp = await GetCurrentOtp(account, httpClient);
             if (passwordFromDb == hashResult && otp == currentOtp)
@@ -81,18 +80,6 @@ namespace DependencyInjectionWorkshop.Models
             }
 
             return hash.ToString();
-        }
-
-        private static string GetPasswordFromDb(string account)
-        {
-            string passwordFromDb;
-            using (var connection = new SqlConnection("my connection string"))
-            {
-                passwordFromDb = connection.Query<string>("spGetUserPassword", new { Id = account },
-                    commandType: CommandType.StoredProcedure).SingleOrDefault();
-            }
-
-            return passwordFromDb;
         }
 
         private static void Notify(string account)
