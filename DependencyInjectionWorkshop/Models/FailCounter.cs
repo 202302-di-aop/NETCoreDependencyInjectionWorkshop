@@ -14,9 +14,9 @@ public class FailCounter
         resetResponse.EnsureSuccessStatusCode();
     }
 
-    public async Task<bool> IsLocked(string account, HttpClient httpClient)
+    public async Task<bool> IsLocked(string account)
     {
-        var isLockedResponse = await httpClient.PostAsJsonAsync("api/failedCounter/IsLocked", account);
+        var isLockedResponse = await new HttpClient() { BaseAddress = new Uri("http://joey.com/") }.PostAsJsonAsync("api/failedCounter/IsLocked", account);
 
         isLockedResponse.EnsureSuccessStatusCode();
         return await isLockedResponse.Content.ReadAsAsync<bool>();

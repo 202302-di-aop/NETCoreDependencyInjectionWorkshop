@@ -11,8 +11,7 @@
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
         {
-            var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
-            var isLocked = await new FailCounter().IsLocked(account, httpClient);
+            var isLocked = await new FailCounter().IsLocked(account);
             if (isLocked)
             {
                 throw new FailedTooManyTimesException() { Account = account };
@@ -20,17 +19,17 @@
 
             var passwordFromDb = _profileRepo.GetPasswordFromDb(account);
             var hashResult = _sha256Adapter.GetHashResult(password);
-            var currentOtp = await _otpProxy.GetCurrentOtp(account, httpClient);
+            var currentOtp = await _otpProxy.GetCurrentOtp(account, new HttpClient() { BaseAddress = new Uri("http://joey.com/") });
             if (passwordFromDb == hashResult && otp == currentOtp)
             {
-                await _failCounter.Reset(account, httpClient);
+                await _failCounter.Reset(account, new HttpClient() { BaseAddress = new Uri("http://joey.com/") });
                 return true;
             }
             else
             {
                 //失敗
-                await _failCounter.AddFailCount(account, httpClient);
-                await LogFailCount(account, httpClient);
+                await _failCounter.AddFailCount(account, new HttpClient() { BaseAddress = new Uri("http://joey.com/") });
+                await LogFailCount(account, new HttpClient() { BaseAddress = new Uri("http://joey.com/") });
                 _slackAdapter.Notify(account);
                 return false;
             }
