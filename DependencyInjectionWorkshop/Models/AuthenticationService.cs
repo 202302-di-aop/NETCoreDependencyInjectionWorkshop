@@ -1,15 +1,21 @@
 ﻿namespace DependencyInjectionWorkshop.Models
 {
-    public class AuthenticationService
+    public interface IAuthentication
+    {
+        Task<bool> IsValid(string account, string password, string otp);
+    }
+
+    public class AuthenticationService : IAuthentication
     {
         private readonly IFailCounter _failCounter;
         private readonly IHash _hash;
+        private readonly IMyLogger _logger;
         private readonly INotification _notification;
         private readonly IOtpProxy _otpProxy;
         private readonly IProfileRepo _profileRepo;
-        private readonly IMyLogger _logger;
 
-        public AuthenticationService(IFailCounter failCounter, IHash hash, INotification notification, IOtpProxy otpProxy, IProfileRepo profileRepo, IMyLogger logger)
+        public AuthenticationService(IFailCounter failCounter, IHash hash, INotification notification,
+            IOtpProxy otpProxy, IProfileRepo profileRepo, IMyLogger logger)
         {
             _failCounter = failCounter;
             _hash = hash;
@@ -51,9 +57,14 @@
                 //失敗
                 await _failCounter.AddFailCount(account);
                 await LogFailCount(account);
-                _notification.Notify(account);
+                NotifyByDecorator(account);
                 return false;
             }
+        }
+
+        private void NotifyByDecorator(string account)
+        {
+            _notification.Notify(account);
         }
 
         private async Task LogFailCount(string account)
