@@ -4,7 +4,7 @@
     {
         private readonly FailCounter _failCounter = new FailCounter();
         private readonly OtpProxy _otpProxy = new OtpProxy();
-        private readonly ProfileRepo _profileRepo = new ProfileRepo();
+        private readonly IProfileRepo _profileRepo = new ProfileRepo();
         private readonly Sha256Adapter _sha256Adapter = new Sha256Adapter();
         private readonly SlackAdapter _slackAdapter = new SlackAdapter();
 

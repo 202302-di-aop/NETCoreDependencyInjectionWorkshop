@@ -4,7 +4,12 @@ using Dapper;
 
 namespace DependencyInjectionWorkshop.Models;
 
-public class ProfileRepo
+public interface IProfileRepo
+{
+    string GetPasswordFromDb(string account);
+}
+
+public class ProfileRepo : IProfileRepo
 {
     public string GetPasswordFromDb(string account)
     {
