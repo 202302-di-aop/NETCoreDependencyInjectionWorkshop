@@ -29,12 +29,9 @@ namespace DependencyInjectionWorkshop.Models
             else
             {
                 //失敗
-                await AddFailCount(account, httpClient);
-
-                await LogFailCount(account, httpClient);
-
-                Notify(account);
-
+                await AddFailCount(account, httpClient); 
+                await LogFailCount(account, httpClient); 
+                Notify(account); 
                 return false;
             }
         }
