@@ -33,19 +33,24 @@ namespace DependencyInjectionWorkshop.Models
                 //失敗
                 await AddFailCount(account, httpClient);
 
-                var failedCountResponse =
-                    await httpClient.PostAsJsonAsync("api/failedCounter/GetFailedCount", account);
-
-                failedCountResponse.EnsureSuccessStatusCode();
-
-                var failedCount = await failedCountResponse.Content.ReadAsAsync<int>();
-                var logger = NLog.LogManager.GetCurrentClassLogger();
-                logger.Info($"accountId:{account} failed times:{failedCount}");
+                await LogFailCount(account, httpClient);
 
                 Notify(account);
 
                 return false;
             }
+        }
+
+        private static async Task LogFailCount(string account, HttpClient httpClient)
+        {
+            var failedCountResponse =
+                await httpClient.PostAsJsonAsync("api/failedCounter/GetFailedCount", account);
+
+            failedCountResponse.EnsureSuccessStatusCode();
+
+            var failedCount = await failedCountResponse.Content.ReadAsAsync<int>();
+            var logger = NLog.LogManager.GetCurrentClassLogger();
+            logger.Info($"accountId:{account} failed times:{failedCount}");
         }
 
         private static async Task AddFailCount(string account, HttpClient httpClient)
