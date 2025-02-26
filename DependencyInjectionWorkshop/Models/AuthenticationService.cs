@@ -1,12 +1,11 @@
-﻿using SlackAPI;
-
-namespace DependencyInjectionWorkshop.Models
+﻿namespace DependencyInjectionWorkshop.Models
 {
     public class AuthenticationService
     {
         private readonly ProfileRepo _profileRepo = new ProfileRepo();
         private readonly Sha256Adapter _sha256Adapter = new Sha256Adapter();
         private readonly OtpProxy _otpProxy = new OtpProxy();
+        private readonly SlackAdapter _slackAdapter = new SlackAdapter();
 
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
@@ -30,8 +29,8 @@ namespace DependencyInjectionWorkshop.Models
             {
                 //失敗
                 await AddFailCount(account, httpClient); 
-                await LogFailCount(account, httpClient); 
-                Notify(account); 
+                await LogFailCount(account, httpClient);
+                _slackAdapter.Notify(account); 
                 return false;
             }
         }
@@ -60,13 +59,6 @@ namespace DependencyInjectionWorkshop.Models
         {
             var addFailedCountResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Add", account);
             addFailedCountResponse.EnsureSuccessStatusCode();
-        }
-
-        private static void Notify(string account)
-        {
-            var message = $"{account} try to login fail.";
-            var slackClient = new SlackClient("my api token");
-            slackClient.PostMessage(response1 => { }, "my channel", message, "my bot name");
         }
 
         private static async Task ResetFailCount(string account, HttpClient httpClient)
