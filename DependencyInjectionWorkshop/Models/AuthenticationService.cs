@@ -44,12 +44,17 @@ namespace DependencyInjectionWorkshop.Models
                 var logger = NLog.LogManager.GetCurrentClassLogger();
                 logger.Info($"accountId:{account} failed times:{failedCount}");
 
-                var message = $"{account} try to login fail.";
-                var slackClient = new SlackClient("my api token");
-                slackClient.PostMessage(response1 => { }, "my channel", message, "my bot name");
+                Notify(account);
 
                 return false;
             }
+        }
+
+        private static void Notify(string account)
+        {
+            var message = $"{account} try to login fail.";
+            var slackClient = new SlackClient("my api token");
+            slackClient.PostMessage(response1 => { }, "my channel", message, "my bot name");
         }
 
         private static async Task<string> GetCurrentOtp(string account, HttpClient httpClient)
