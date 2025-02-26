@@ -11,6 +11,16 @@ namespace DependencyInjectionWorkshop.Models
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
         {
+            
+            var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
+            var isLockedResponse = await httpClient.PostAsJsonAsync("api/failedCounter/IsLocked", account);
+
+            isLockedResponse.EnsureSuccessStatusCode();
+            if (await isLockedResponse.Content.ReadAsAsync<bool>())
+            {
+                throw new FailedTooManyTimesException(){Account = account};
+            }
+            
             string passwordFromDb;
             using (var connection = new SqlConnection("my connection string"))
             {
@@ -28,7 +38,6 @@ namespace DependencyInjectionWorkshop.Models
 
             var hashResult = hash.ToString();
 
-            var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
             var response = await httpClient.PostAsJsonAsync("api/otps", account);
 
             var currentOtp = await response.Content.ReadAsAsync<string>();
@@ -51,5 +60,10 @@ namespace DependencyInjectionWorkshop.Models
                 return false;
             }
         }
+    }
+
+    public class FailedTooManyTimesException : Exception
+    {
+        public string Account { get; set; }
     }
 }
