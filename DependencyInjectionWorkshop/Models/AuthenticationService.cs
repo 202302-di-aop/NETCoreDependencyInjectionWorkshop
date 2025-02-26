@@ -5,44 +5,6 @@
         Task<bool> IsValid(string account, string password, string otp);
     }
 
-    public class FailCounterDecorator : IAuthentication
-    {
-        private readonly IFailCounter _failCounter;
-        private IAuthentication _authentication;
-
-        public FailCounterDecorator(IAuthentication authentication, IFailCounter failCounter)
-        {
-            _authentication = authentication;
-            _failCounter = failCounter;
-        }
-
-        public async Task<bool> IsValid(string account, string password, string otp)
-        {
-            var isValid = await _authentication.IsValid(account, password, otp);
-            if (isValid)
-            {
-                await _failCounter.Reset(account);
-            }
-
-            return isValid;
-        }
-
-        public Task AddFailCount(string account)
-        {
-            return _failCounter.AddFailCount(account);
-        }
-
-        public Task<int> GetFailedCount(string account)
-        {
-            return _failCounter.GetFailedCount(account);
-        }
-
-        public Task<bool> IsLocked(string account)
-        {
-            return _failCounter.IsLocked(account);
-        }
-    }
-
     public class AuthenticationService : IAuthentication
     {
         private readonly IFailCounter _failCounter;
@@ -93,7 +55,7 @@
             }
             else
             {
-                await _failCounter.AddFailCount(account);
+                // await _failCounter.AddFailCount(account);
                 await LogFailCount(account);
                 return false;
             }
