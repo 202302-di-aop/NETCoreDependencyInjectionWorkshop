@@ -6,7 +6,7 @@ namespace DependencyInjectionWorkshopTests
     [TestFixture]
     public class AuthenticationServiceTests
     {
-        private AuthenticationService _authenticationService;
+        private IAuthentication _authentication;
         private IFailCounter _failCounter;
         private IHash _hash;
         private IMyLogger _myLogger;
@@ -23,9 +23,12 @@ namespace DependencyInjectionWorkshopTests
             _otpProxy = Substitute.For<IOtpProxy>();
             _profileRepo = Substitute.For<IProfileRepo>();
             _myLogger = Substitute.For<IMyLogger>();
-            _authenticationService =
-                new AuthenticationService(_failCounter, _hash, _notification, _otpProxy, _profileRepo, _myLogger);
+            _authentication =
+                new AuthenticationService(_failCounter, _hash, _otpProxy, _profileRepo, _myLogger);
+
+            _authentication = new NotificationDecorator(_authentication, _notification);
         }
+
 
         [Test]
         public async Task is_valid()
@@ -88,7 +91,7 @@ namespace DependencyInjectionWorkshopTests
 
         private void ShouldThrow<TException>() where TException : Exception
         {
-            AsyncTestDelegate action = async () => await _authenticationService.IsValid("joey", "abc", "123456");
+            AsyncTestDelegate action = async () => await _authentication.IsValid("joey", "abc", "123456");
             Assert.ThrowsAsync<TException>(action);
         }
 
@@ -103,7 +106,7 @@ namespace DependencyInjectionWorkshopTests
             GivenHashResult("abc", "hashed_abc");
             GivenCurrentOtp(account, "123456");
 
-            await _authenticationService.IsValid(account, "abc", "wrong otp");
+            await _authentication.IsValid(account, "abc", "wrong otp");
         }
 
         private async Task WhenValid(string account)
@@ -112,18 +115,18 @@ namespace DependencyInjectionWorkshopTests
             GivenHashResult("abc", "hashed_abc");
             GivenCurrentOtp("joey", "123456");
 
-            await _authenticationService.IsValid(account, "abc", "123456");
+            await _authentication.IsValid(account, "abc", "123456");
         }
 
         private async Task ShouldBeInvalid(string account, string password, string wrongOtp)
         {
-            var isValid = await _authenticationService.IsValid(account, password, wrongOtp);
+            var isValid = await _authentication.IsValid(account, password, wrongOtp);
             Assert.IsFalse(isValid);
         }
 
         private async Task ShouldBeValid(string account, string password, string otp)
         {
-            var isValid = await _authenticationService.IsValid(account, password, otp);
+            var isValid = await _authentication.IsValid(account, password, otp);
             Assert.IsTrue(isValid);
         }
 
