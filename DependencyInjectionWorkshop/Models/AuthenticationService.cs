@@ -1,11 +1,21 @@
 ﻿namespace DependencyInjectionWorkshop.Models
 {
+    public class FailCounter
+    {
+        public async Task Reset(string account, HttpClient httpClient)
+        {
+            var resetResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Reset", account);
+            resetResponse.EnsureSuccessStatusCode();
+        }
+    }
+
     public class AuthenticationService
     {
         private readonly ProfileRepo _profileRepo = new ProfileRepo();
         private readonly Sha256Adapter _sha256Adapter = new Sha256Adapter();
         private readonly OtpProxy _otpProxy = new OtpProxy();
         private readonly SlackAdapter _slackAdapter = new SlackAdapter();
+        private readonly FailCounter _failCounter = new FailCounter();
 
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
@@ -22,15 +32,15 @@
             var currentOtp = await _otpProxy.GetCurrentOtp(account, httpClient);
             if (passwordFromDb == hashResult && otp == currentOtp)
             {
-                await ResetFailCount(account, httpClient);
+                await _failCounter.Reset(account, httpClient);
                 return true;
             }
             else
             {
                 //失敗
-                await AddFailCount(account, httpClient); 
+                await AddFailCount(account, httpClient);
                 await LogFailCount(account, httpClient);
-                _slackAdapter.Notify(account); 
+                _slackAdapter.Notify(account);
                 return false;
             }
         }
@@ -59,12 +69,6 @@
         {
             var addFailedCountResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Add", account);
             addFailedCountResponse.EnsureSuccessStatusCode();
-        }
-
-        private static async Task ResetFailCount(string account, HttpClient httpClient)
-        {
-            var resetResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Reset", account);
-            resetResponse.EnsureSuccessStatusCode();
         }
     }
 
