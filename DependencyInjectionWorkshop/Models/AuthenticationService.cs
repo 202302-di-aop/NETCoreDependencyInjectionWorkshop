@@ -1,11 +1,11 @@
-﻿using System.Text;
-using SlackAPI;
+﻿using SlackAPI;
 
 namespace DependencyInjectionWorkshop.Models
 {
     public class AuthenticationService
     {
         private readonly ProfileRepo _profileRepo = new ProfileRepo();
+        private readonly Sha256Adapter _sha256Adapter = new Sha256Adapter();
 
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
@@ -18,7 +18,7 @@ namespace DependencyInjectionWorkshop.Models
             }
 
             var passwordFromDb = _profileRepo.GetPasswordFromDb(account);
-            var hashResult = GetHashResult(password);
+            var hashResult = _sha256Adapter.GetHashResult(password);
             var currentOtp = await GetCurrentOtp(account, httpClient);
             if (passwordFromDb == hashResult && otp == currentOtp)
             {
@@ -66,20 +66,6 @@ namespace DependencyInjectionWorkshop.Models
             var response = await httpClient.PostAsJsonAsync("api/otps", account);
 
             return await response.Content.ReadAsAsync<string>();
-        }
-
-        [Obsolete("Obsolete")]
-        private static string GetHashResult(string password)
-        {
-            var crypt = new System.Security.Cryptography.SHA256Managed();
-            var hash = new StringBuilder();
-            var crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(password));
-            foreach (var theByte in crypto)
-            {
-                hash.Append(theByte.ToString("x2"));
-            }
-
-            return hash.ToString();
         }
 
         private static void Notify(string account)
