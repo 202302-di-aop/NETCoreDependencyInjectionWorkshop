@@ -6,6 +6,7 @@ namespace DependencyInjectionWorkshop.Models
     {
         private readonly ProfileRepo _profileRepo = new ProfileRepo();
         private readonly Sha256Adapter _sha256Adapter = new Sha256Adapter();
+        private readonly OtpProxy _otpProxy = new OtpProxy();
 
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
@@ -19,7 +20,7 @@ namespace DependencyInjectionWorkshop.Models
 
             var passwordFromDb = _profileRepo.GetPasswordFromDb(account);
             var hashResult = _sha256Adapter.GetHashResult(password);
-            var currentOtp = await GetCurrentOtp(account, httpClient);
+            var currentOtp = await _otpProxy.GetCurrentOtp(account, httpClient);
             if (passwordFromDb == hashResult && otp == currentOtp)
             {
                 await ResetFailCount(account, httpClient);
@@ -59,13 +60,6 @@ namespace DependencyInjectionWorkshop.Models
         {
             var addFailedCountResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Add", account);
             addFailedCountResponse.EnsureSuccessStatusCode();
-        }
-
-        private static async Task<string> GetCurrentOtp(string account, HttpClient httpClient)
-        {
-            var response = await httpClient.PostAsJsonAsync("api/otps", account);
-
-            return await response.Content.ReadAsAsync<string>();
         }
 
         private static void Notify(string account)
