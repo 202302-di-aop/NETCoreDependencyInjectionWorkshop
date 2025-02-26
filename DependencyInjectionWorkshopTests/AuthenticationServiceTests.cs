@@ -24,10 +24,11 @@ namespace DependencyInjectionWorkshopTests
             _profileRepo = Substitute.For<IProfileRepo>();
             _myLogger = Substitute.For<IMyLogger>();
             _authentication =
-                new AuthenticationService(_failCounter, _hash, _otpProxy, _profileRepo, _myLogger);
+                new AuthenticationService(_hash, _otpProxy, _profileRepo);
 
             _authentication = new NotificationDecorator(_authentication, _notification);
             _authentication = new FailCounterDecorator(_authentication, _failCounter);
+            _authentication = new LogDecorator(_authentication, _failCounter, _myLogger);
         }
 
 
