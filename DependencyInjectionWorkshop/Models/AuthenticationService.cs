@@ -5,17 +5,58 @@
         Task<bool> IsValid(string account, string password, string otp);
     }
 
+    public class FailCounterDecorator : IAuthentication
+    {
+        private readonly IFailCounter _failCounter;
+        private IAuthentication _authentication;
+
+        public FailCounterDecorator(IAuthentication authentication, IFailCounter failCounter)
+        {
+            _authentication = authentication;
+            _failCounter = failCounter;
+        }
+
+        public async Task<bool> IsValid(string account, string password, string otp)
+        {
+            var isValid = await _authentication.IsValid(account, password, otp);
+            if (isValid)
+            {
+                await _failCounter.Reset(account);
+            }
+
+            return isValid;
+        }
+
+        public Task AddFailCount(string account)
+        {
+            return _failCounter.AddFailCount(account);
+        }
+
+        public Task<int> GetFailedCount(string account)
+        {
+            return _failCounter.GetFailedCount(account);
+        }
+
+        public Task<bool> IsLocked(string account)
+        {
+            return _failCounter.IsLocked(account);
+        }
+    }
+
     public class AuthenticationService : IAuthentication
     {
         private readonly IFailCounter _failCounter;
         private readonly IHash _hash;
         private readonly IMyLogger _logger;
         private readonly IOtpProxy _otpProxy;
+
         private readonly IProfileRepo _profileRepo;
+        // private readonly FailCounterDecorator _failCounterDecorator;
 
         public AuthenticationService(IFailCounter failCounter, IHash hash,
             IOtpProxy otpProxy, IProfileRepo profileRepo, IMyLogger logger)
         {
+            // _failCounterDecorator = new FailCounterDecorator(this);
             _failCounter = failCounter;
             _hash = hash;
             _otpProxy = otpProxy;
@@ -25,6 +66,7 @@
 
         public AuthenticationService()
         {
+            // _failCounterDecorator = new FailCounterDecorator(this);
             _failCounter = new FailCounter();
             _profileRepo = new ProfileRepo();
             _hash = new Sha256Adapter();
@@ -46,7 +88,7 @@
             var currentOtp = await _otpProxy.GetCurrentOtp(account);
             if (passwordFromDb == hashResult && otp == currentOtp)
             {
-                await _failCounter.Reset(account);
+                // await _failCounterDecorator.ResetByDecorator(account);
                 return true;
             }
             else
