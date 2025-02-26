@@ -2,9 +2,9 @@
 
 public class OtpProxy
 {
-    public async Task<string> GetCurrentOtp(string account, HttpClient httpClient)
+    public async Task<string> GetCurrentOtp(string account)
     {
-        var response = await httpClient.PostAsJsonAsync("api/otps", account);
+        var response = await new HttpClient() { BaseAddress = new Uri("http://joey.com/") }.PostAsJsonAsync("api/otps", account);
 
         return await response.Content.ReadAsAsync<string>();
     }

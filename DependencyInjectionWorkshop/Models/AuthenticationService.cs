@@ -19,26 +19,25 @@
 
             var passwordFromDb = _profileRepo.GetPasswordFromDb(account);
             var hashResult = _sha256Adapter.GetHashResult(password);
-            var currentOtp = await _otpProxy.GetCurrentOtp(account, new HttpClient() { BaseAddress = new Uri("http://joey.com/") });
+            var currentOtp = await _otpProxy.GetCurrentOtp(account);
             if (passwordFromDb == hashResult && otp == currentOtp)
             {
-                await _failCounter.Reset(account, new HttpClient() { BaseAddress = new Uri("http://joey.com/") });
+                await _failCounter.Reset(account);
                 return true;
             }
             else
             {
                 //失敗
-                await _failCounter.AddFailCount(account, new HttpClient() { BaseAddress = new Uri("http://joey.com/") });
-                await LogFailCount(account, new HttpClient() { BaseAddress = new Uri("http://joey.com/") });
+                await _failCounter.AddFailCount(account);
+                await LogFailCount(account);
                 _slackAdapter.Notify(account);
                 return false;
             }
         }
 
-        private static async Task LogFailCount(string account, HttpClient httpClient)
+        private static async Task LogFailCount(string account)
         {
-            
-            var failedCount = await new FailCounter().GetFailedCount(account, httpClient);
+            var failedCount = await new FailCounter().GetFailedCount(account);
             new NLogAdapter().Info($"accountId:{account} failed times:{failedCount}");
         }
     }
