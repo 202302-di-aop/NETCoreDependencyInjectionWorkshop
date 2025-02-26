@@ -1,21 +1,12 @@
 ﻿namespace DependencyInjectionWorkshop.Models
 {
-    public class FailCounter
-    {
-        public async Task Reset(string account, HttpClient httpClient)
-        {
-            var resetResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Reset", account);
-            resetResponse.EnsureSuccessStatusCode();
-        }
-    }
-
     public class AuthenticationService
     {
+        private readonly FailCounter _failCounter = new FailCounter();
+        private readonly OtpProxy _otpProxy = new OtpProxy();
         private readonly ProfileRepo _profileRepo = new ProfileRepo();
         private readonly Sha256Adapter _sha256Adapter = new Sha256Adapter();
-        private readonly OtpProxy _otpProxy = new OtpProxy();
         private readonly SlackAdapter _slackAdapter = new SlackAdapter();
-        private readonly FailCounter _failCounter = new FailCounter();
 
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
@@ -38,7 +29,7 @@
             else
             {
                 //失敗
-                await AddFailCount(account, httpClient);
+                await _failCounter.AddFailCount(account, httpClient);
                 await LogFailCount(account, httpClient);
                 _slackAdapter.Notify(account);
                 return false;
@@ -63,12 +54,6 @@
             var failedCount = await failedCountResponse.Content.ReadAsAsync<int>();
             var logger = NLog.LogManager.GetCurrentClassLogger();
             logger.Info($"accountId:{account} failed times:{failedCount}");
-        }
-
-        private static async Task AddFailCount(string account, HttpClient httpClient)
-        {
-            var addFailedCountResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Add", account);
-            addFailedCountResponse.EnsureSuccessStatusCode();
         }
     }
 
