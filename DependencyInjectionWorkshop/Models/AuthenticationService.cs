@@ -12,10 +12,8 @@ namespace DependencyInjectionWorkshop.Models
         public async Task<bool> IsValid(string account, string password, string otp)
         {
             var httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
-            var isLockedResponse = await httpClient.PostAsJsonAsync("api/failedCounter/IsLocked", account);
-
-            isLockedResponse.EnsureSuccessStatusCode();
-            if (await isLockedResponse.Content.ReadAsAsync<bool>())
+            var isLocked = await IsLocked(account, httpClient);
+            if (isLocked)
             {
                 throw new FailedTooManyTimesException() { Account = account };
             }
@@ -39,6 +37,14 @@ namespace DependencyInjectionWorkshop.Models
 
                 return false;
             }
+        }
+
+        private static async Task<bool> IsLocked(string account, HttpClient httpClient)
+        {
+            var isLockedResponse = await httpClient.PostAsJsonAsync("api/failedCounter/IsLocked", account);
+
+            isLockedResponse.EnsureSuccessStatusCode();
+            return await isLockedResponse.Content.ReadAsAsync<bool>();
         }
 
         private static async Task LogFailCount(string account, HttpClient httpClient)
