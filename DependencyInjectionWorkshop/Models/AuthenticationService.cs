@@ -20,13 +20,9 @@ namespace DependencyInjectionWorkshop.Models
                 throw new FailedTooManyTimesException() { Account = account };
             }
 
-            var passwordFromDb = GetPasswordFromDb(account);
-
-            var hashResult = GetHashResult(password);
-
-            var response = await httpClient.PostAsJsonAsync("api/otps", account);
-
-            var currentOtp = await response.Content.ReadAsAsync<string>();
+            var passwordFromDb = GetPasswordFromDb(account); 
+            var hashResult = GetHashResult(password); 
+            var currentOtp = await GetCurrentOtp(account, httpClient);
             if (passwordFromDb == hashResult && otp == currentOtp)
             {
                 var resetResponse = await httpClient.PostAsJsonAsync("api/failedCounter/Reset", account);
@@ -54,6 +50,13 @@ namespace DependencyInjectionWorkshop.Models
 
                 return false;
             }
+        }
+
+        private static async Task<string> GetCurrentOtp(string account, HttpClient httpClient)
+        {
+            var response = await httpClient.PostAsJsonAsync("api/otps", account);
+
+            return await response.Content.ReadAsAsync<string>();
         }
 
         [Obsolete("Obsolete")]
