@@ -1,6 +1,6 @@
 ﻿namespace DependencyInjectionWorkshop.Models;
 
-internal interface IMyLogger
+public interface IMyLogger
 {
     void Info(string message);
 }

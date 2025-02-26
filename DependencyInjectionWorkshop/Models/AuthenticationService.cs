@@ -2,17 +2,37 @@
 {
     public class AuthenticationService
     {
-        private readonly IFailCounter _failCounter = new FailCounter();
-        private readonly IHash _hash = new Sha256Adapter();
-        private readonly IMyLogger _logger = new NLogAdapter();
-        private readonly INotification _notification = new SlackAdapter();
-        private readonly IOtpProxy _otpProxy = new OtpProxy();
-        private readonly IProfileRepo _profileRepo = new ProfileRepo();
+        private readonly IFailCounter _failCounter;
+        private readonly IHash _hash;
+        private readonly INotification _notification;
+        private readonly IOtpProxy _otpProxy;
+        private readonly IProfileRepo _profileRepo;
+        private readonly IMyLogger _logger;
+
+        public AuthenticationService(IFailCounter failCounter, IHash hash, INotification notification, IOtpProxy otpProxy, IProfileRepo profileRepo, IMyLogger logger)
+        {
+            _failCounter = failCounter;
+            _hash = hash;
+            _notification = notification;
+            _otpProxy = otpProxy;
+            _profileRepo = profileRepo;
+            _logger = logger;
+        }
+
+        public AuthenticationService()
+        {
+            _failCounter = new FailCounter();
+            _profileRepo = new ProfileRepo();
+            _hash = new Sha256Adapter();
+            _otpProxy = new OtpProxy();
+            _notification = new SlackAdapter();
+            _logger = new NLogAdapter();
+        }
 
         [Obsolete("Obsolete")]
         public async Task<bool> IsValid(string account, string password, string otp)
         {
-            var isLocked = await new FailCounter().IsLocked(account);
+            var isLocked = await _failCounter.IsLocked(account);
             if (isLocked)
             {
                 throw new FailedTooManyTimesException() { Account = account };
