@@ -2,10 +2,12 @@
 
 public class FailCounter
 {
+    private HttpClient _httpClient = new HttpClient() { BaseAddress = new Uri("http://joey.com/") };
+
     public async Task AddFailCount(string account)
     {
         var addFailedCountResponse =
-            await new HttpClient() { BaseAddress = new Uri("http://joey.com/") }.PostAsJsonAsync(
+            await _httpClient.PostAsJsonAsync(
                 "api/failedCounter/Add", account);
         addFailedCountResponse.EnsureSuccessStatusCode();
     }
@@ -13,7 +15,7 @@ public class FailCounter
     public async Task<int> GetFailedCount(string account)
     {
         var failedCountResponse =
-            await new HttpClient() { BaseAddress = new Uri("http://joey.com/") }.PostAsJsonAsync(
+            await _httpClient.PostAsJsonAsync(
                 "api/failedCounter/GetFailedCount", account);
 
         failedCountResponse.EnsureSuccessStatusCode();
@@ -25,7 +27,7 @@ public class FailCounter
     public async Task<bool> IsLocked(string account)
     {
         var isLockedResponse =
-            await new HttpClient() { BaseAddress = new Uri("http://joey.com/") }.PostAsJsonAsync(
+            await _httpClient.PostAsJsonAsync(
                 "api/failedCounter/IsLocked", account);
 
         isLockedResponse.EnsureSuccessStatusCode();
@@ -35,7 +37,7 @@ public class FailCounter
     public async Task Reset(string account)
     {
         var resetResponse =
-            await new HttpClient() { BaseAddress = new Uri("http://joey.com/") }.PostAsJsonAsync(
+            await _httpClient.PostAsJsonAsync(
                 "api/failedCounter/Reset", account);
         resetResponse.EnsureSuccessStatusCode();
     }
