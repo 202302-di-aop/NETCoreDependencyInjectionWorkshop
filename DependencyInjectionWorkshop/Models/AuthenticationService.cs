@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Text;
 using Dapper;
+using SlackAPI;
 
 namespace DependencyInjectionWorkshop.Models
 {
@@ -36,7 +37,11 @@ namespace DependencyInjectionWorkshop.Models
                 return true;
             }
             else
-            { 
+            {
+                var message = $"{account} try to login fail.";
+                var slackClient = new SlackClient("my api token");
+                slackClient.PostMessage(response1 => { }, "my channel", message, "my bot name");
+                
                 return false;
             }
         }
