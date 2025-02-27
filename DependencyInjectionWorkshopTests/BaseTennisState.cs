@@ -16,4 +16,9 @@ public abstract class BaseTennisState
     {
         _tennisBox.ChangeState(new LookupState(_tennisBox));
     }
+
+    protected void GoToAllState()
+    {
+        _tennisBox.ChangeState(new AllState(_tennisBox));
+    }
 }

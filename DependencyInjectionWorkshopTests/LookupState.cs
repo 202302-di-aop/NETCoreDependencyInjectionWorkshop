@@ -8,7 +8,7 @@ public class LookupState : BaseTennisState
 
     public override void NextState()
     {
-        _tennisBox.ChangeState(new AllState(_tennisBox));
+        GoToAllState();
     }
 
     public override string Score()
