@@ -6,6 +6,11 @@ public class LookupState : AllState
     {
     }
 
+    public void NextStateByLookupState()
+    {
+        _tennisBox.ChangeState(new AllState(_tennisBox));
+    }
+
     public override string Score()
     {
         return "fifteen love";

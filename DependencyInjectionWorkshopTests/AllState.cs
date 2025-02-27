@@ -2,7 +2,7 @@
 
 public class AllState
 {
-    private readonly TennisBox _tennisBox;
+    protected readonly TennisBox _tennisBox;
 
     public AllState(TennisBox tennisBox)
     {

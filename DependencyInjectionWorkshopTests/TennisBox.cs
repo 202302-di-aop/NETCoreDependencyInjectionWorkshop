@@ -30,11 +30,7 @@ public class TennisBox
     public void SecondPlayerGoal()
     {
         _secondPlayerScore++;
-        NextStateByLookupState(new LookupState(this));
-    }
-
-    private void NextStateByLookupState(LookupState lookupState)
-    {
-        ChangeState(new AllState(this));
+        //todo: should use _currentState
+        new LookupState(this).NextStateByLookupState();
     }
 }
