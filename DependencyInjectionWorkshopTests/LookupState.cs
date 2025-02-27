@@ -1,0 +1,9 @@
+﻿namespace DependencyInjectionWorkshopTests;
+
+public class LookupState : AllState
+{
+    public override string Score()
+    {
+        return "fifteen love";
+    }
+}
