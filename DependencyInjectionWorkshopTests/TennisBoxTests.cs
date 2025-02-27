@@ -49,6 +49,14 @@ public class TennisBoxTests
         ScoreShouldBe("forty fifteen");
     }
 
+    [Test]
+    public void lookup_state_to_deuce_state_from_3_2_to_3_3()
+    {
+        GivenScoreContext(3, 2);
+        WhenSecondPlayerGoal();
+        ScoreShouldBe("deuce");
+    }
+
     private void GivenScoreContext(int firstPlayerScore, int secondPlayerScore)
     {
         GivenFirstPlayerScore(firstPlayerScore);
