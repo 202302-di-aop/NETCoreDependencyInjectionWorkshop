@@ -21,7 +21,7 @@ public class AllState : BaseTennisState
 
     public override void NextState()
     {
-        _tennisBox.ChangeState(new LookupState(_tennisBox));
+        GoToLookupState();
     }
 
     public override string Score()
@@ -32,5 +32,10 @@ public class AllState : BaseTennisState
         }
 
         return "love all";
+    }
+
+    private void GoToLookupState()
+    {
+        _tennisBox.ChangeState(new LookupState(_tennisBox));
     }
 }
