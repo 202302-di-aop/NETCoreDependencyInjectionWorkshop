@@ -20,6 +20,11 @@ public abstract class BaseTennisState
     public abstract void NextState();
     public abstract string Score();
 
+    protected void GoToAdvState()
+    {
+        _tennisBox.ChangeState(new AdvState(_tennisBox));
+    }
+
     protected void GoToAllState()
     {
         _tennisBox.ChangeState(new AllState(_tennisBox));
