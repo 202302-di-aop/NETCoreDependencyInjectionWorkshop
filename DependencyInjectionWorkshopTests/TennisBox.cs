@@ -14,7 +14,7 @@ public class TennisBox
     public void FirstPlayerGoal()
     {
         _firstPlayerScore++;
-        ChangeState(new LookupState(this));
+        NextStateByAllState();
     }
 
     public string Score()
@@ -26,11 +26,15 @@ public class TennisBox
     {
         _secondPlayerScore++;
         ChangeState(new AllState(this));
-        // _currentState = new AllState(this);
     }
 
     private void ChangeState(AllState state)
     {
         _currentState = state;
+    }
+
+    private void NextStateByAllState()
+    {
+        ChangeState(new LookupState(this));
     }
 }
