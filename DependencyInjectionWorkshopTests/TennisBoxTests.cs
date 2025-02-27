@@ -20,8 +20,21 @@ public class TennisBoxTests
     [Test]
     public void all_state_to_lookup_state_from_0_0_to_1_0()
     {
-        _tennisBox.FirstPlayerGoal();
+        WhenFirstPlayerGoal();
         ScoreShouldBe("fifteen love");
+    }
+
+    [Test]
+    public void lookup_state_to_all_state_from_1_0_to_1_1()
+    {
+        _tennisBox.FirstPlayerGoal();
+        _tennisBox.SecondPlayerGoal();
+        ScoreShouldBe("fifteen all");
+    }
+
+    private void WhenFirstPlayerGoal()
+    {
+        _tennisBox.FirstPlayerGoal();
     }
 
     private void ScoreShouldBe(string expected)
