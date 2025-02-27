@@ -13,6 +13,11 @@ public class LookupState : BaseTennisState
 
     public override string Score()
     {
+        if (_tennisBox._firstPlayerScore == 2)
+        {
+            return "thirty fifteen";
+        }
+
         return "fifteen love";
     }
 }
