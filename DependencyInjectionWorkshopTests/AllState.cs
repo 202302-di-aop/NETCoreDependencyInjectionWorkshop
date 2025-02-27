@@ -9,6 +9,11 @@ public class AllState
         _tennisBox = tennisBox;
     }
 
+    public void NextState()
+    {
+        _tennisBox.ChangeState(new LookupState(_tennisBox));
+    }
+
     public virtual string Score()
     {
         if (_tennisBox._firstPlayerScore == 1)
