@@ -4,7 +4,7 @@ public class TennisBox
 {
     private BaseTennisState _currentState;
     public int _firstPlayerScore;
-    private int _secondPlayerScore;
+    public int _secondPlayerScore;
 
     public TennisBox()
     {
