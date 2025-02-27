@@ -10,7 +10,14 @@ public class LookupState : BaseTennisState
     {
         if (_tennisBox._firstPlayerScore == _tennisBox._secondPlayerScore)
         {
-            GoToAllState();
+            if (_tennisBox._firstPlayerScore >= 3)
+            {
+                GoToDeuceState();
+            }
+            else
+            {
+                GoToAllState();
+            }
         }
         else
         {
