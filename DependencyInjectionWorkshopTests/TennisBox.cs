@@ -29,18 +29,8 @@ public class TennisBox
     public string GetAdvPlayer()
     {
         return _firstPlayerScore > _secondPlayerScore
-            ? GetFirstPlayerName()
-            : GetSecondPlayerName();
-    }
-
-    public string GetFirstPlayerName()
-    {
-        return _firstPlayerName;
-    }
-
-    public string GetSecondPlayerName()
-    {
-        return _secondPlayerName;
+            ? _firstPlayerName
+            : _secondPlayerName;
     }
 
     public string Score()
