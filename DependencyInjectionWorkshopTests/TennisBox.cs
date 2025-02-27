@@ -3,12 +3,14 @@
 public class TennisBox
 {
     private BaseTennisState _currentState;
+    private string _firstPlayerName;
     public int _firstPlayerScore;
     public int _secondPlayerScore;
 
-    public TennisBox()
+    public TennisBox(string firstPlayerName)
     {
         _currentState = new AllState(this);
+        _firstPlayerName = firstPlayerName;
     }
 
     public void ChangeState(BaseTennisState state)
@@ -22,6 +24,11 @@ public class TennisBox
         _currentState.NextState();
     }
 
+    public string GetFirstPlayerName()
+    {
+        return _firstPlayerName;
+    }
+
     public string Score()
     {
         return _currentState.Score();
@@ -31,10 +38,5 @@ public class TennisBox
     {
         _secondPlayerScore++;
         _currentState.NextState();
-    }
-
-    public string GetFirstPlayerName()
-    {
-        return "Matt";
     }
 }
