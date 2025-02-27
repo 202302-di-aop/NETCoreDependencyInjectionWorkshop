@@ -2,7 +2,7 @@
 
 public class TennisBox
 {
-    private AllState _currentState;
+    private BaseTennisState _currentState;
     public int _firstPlayerScore;
     private int _secondPlayerScore;
 
@@ -11,7 +11,7 @@ public class TennisBox
         _currentState = new AllState(this);
     }
 
-    public void ChangeState(AllState state)
+    public void ChangeState(BaseTennisState state)
     {
         _currentState = state;
     }

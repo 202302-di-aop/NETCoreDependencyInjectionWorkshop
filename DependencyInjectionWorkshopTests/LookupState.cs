@@ -1,12 +1,12 @@
 ﻿namespace DependencyInjectionWorkshopTests;
 
-public class LookupState : AllState
+public class LookupState : BaseTennisState
 {
     public LookupState(TennisBox tennisBox) : base(tennisBox)
     {
     }
 
-    public void NextState()
+    public override void NextState()
     {
         _tennisBox.ChangeState(new AllState(_tennisBox));
     }
