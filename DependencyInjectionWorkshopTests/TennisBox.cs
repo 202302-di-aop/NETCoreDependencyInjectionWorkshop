@@ -32,4 +32,9 @@ public class TennisBox
         _secondPlayerScore++;
         _currentState.NextState();
     }
+
+    public string GetFirstPlayerName()
+    {
+        return "Matt";
+    }
 }

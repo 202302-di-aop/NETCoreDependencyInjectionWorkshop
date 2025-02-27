@@ -13,6 +13,7 @@ public class AdvState : BaseTennisState
 
     public override string Score()
     {
-        return "Matt adv";
+        var firstPlayerName = _tennisBox.GetFirstPlayerName();
+        return $"{firstPlayerName} adv";
     }
 }
