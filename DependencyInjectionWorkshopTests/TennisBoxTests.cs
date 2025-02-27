@@ -27,9 +27,22 @@ public class TennisBoxTests
     [Test]
     public void lookup_state_to_all_state_from_1_0_to_1_1()
     {
-        _tennisBox.FirstPlayerGoal();
-        _tennisBox.SecondPlayerGoal();
+        GivenFirstPlayerScore(1);
+        WhenSecondPlayerGoal();
         ScoreShouldBe("fifteen all");
+    }
+
+    private void WhenSecondPlayerGoal()
+    {
+        _tennisBox.SecondPlayerGoal();
+    }
+
+    private void GivenFirstPlayerScore(int score)
+    {
+        for (int i = 0; i < score; i++)
+        {
+            _tennisBox.FirstPlayerGoal();
+        }
     }
 
     private void WhenFirstPlayerGoal()
