@@ -32,6 +32,23 @@ public class TennisBoxTests
         ScoreShouldBe("fifteen all");
     }
 
+    [Test]
+    public void all_state_to_lookup_state_from_1_1_to_2_1()
+    {
+        GivenFirstPlayerScore(1);
+        GivenSecondPlayerScore(1);
+        WhenFirstPlayerGoal();
+        ScoreShouldBe("thirty fifteen");
+    }
+
+    private void GivenSecondPlayerScore(int score)
+    {
+        for (int i = 0; i < score; i++)
+        {
+            _tennisBox.SecondPlayerGoal();
+        }
+    }
+
     private void WhenSecondPlayerGoal()
     {
         _tennisBox.SecondPlayerGoal();
