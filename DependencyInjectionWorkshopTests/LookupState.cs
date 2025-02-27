@@ -8,7 +8,14 @@ public class LookupState : BaseTennisState
 
     public override void NextState()
     {
-        GoToAllState();
+        if (_tennisBox._firstPlayerScore == _tennisBox._secondPlayerScore)
+        {
+            GoToAllState();
+        }
+        else
+        {
+            GoToLookupState();
+        }
     }
 
     public override string Score()
