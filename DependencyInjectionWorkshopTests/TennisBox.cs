@@ -31,6 +31,6 @@ public class TennisBox
     {
         _secondPlayerScore++;
         //todo: should use _currentState
-        new LookupState(this).NextStateByLookupState();
+        _currentState.NextState();
     }
 }

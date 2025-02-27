@@ -6,7 +6,7 @@ public class LookupState : AllState
     {
     }
 
-    public void NextStateByLookupState()
+    public void NextState()
     {
         _tennisBox.ChangeState(new AllState(_tennisBox));
     }
