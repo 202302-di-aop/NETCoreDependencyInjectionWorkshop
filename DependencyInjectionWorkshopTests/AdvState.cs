@@ -8,7 +8,15 @@ public class AdvState : BaseTennisState
 
     public override void NextState()
     {
-        GoToDeuceState();
+        if (_tennisBox._firstPlayerScore == _tennisBox._secondPlayerScore)
+        {
+            GoToDeuceState();
+        }
+        else
+        {
+            GoToWinState();
+        }
+        
     }
 
     public override string Score()
