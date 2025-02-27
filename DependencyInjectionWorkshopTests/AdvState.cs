@@ -15,7 +15,7 @@ public class AdvState : BaseTennisState
     {
         var advPlayer = _tennisBox._firstPlayerScore > _tennisBox._secondPlayerScore
             ? _tennisBox.GetFirstPlayerName()
-            : "Joey";
+            : _tennisBox.GetSecondPlayerName();
         return $"{advPlayer} adv";
     }
 }

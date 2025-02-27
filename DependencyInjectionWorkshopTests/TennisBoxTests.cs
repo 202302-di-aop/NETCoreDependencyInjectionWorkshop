@@ -8,7 +8,7 @@ public class TennisBoxTests
     [SetUp]
     public void SetUp()
     {
-        _tennisBox = new TennisBox("Matt");
+        _tennisBox = new TennisBox("Matt", "Joey");
     }
 
     [Test]
