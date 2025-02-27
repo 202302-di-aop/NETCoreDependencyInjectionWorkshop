@@ -27,16 +27,16 @@ public class LogInterceptor : IInterceptor
 
 public class Period
 {
-    public DateTime Start { get; }
-    public DateTime End { get; }
-
-    public Period NextPeriod { get; set; }
-
     public Period(DateTime start, DateTime end)
     {
         Start = start;
         End = end;
     }
+
+    public DateTime End { get; }
+
+    public Period NextPeriod { get; set; }
+    public DateTime Start { get; }
 
     public override string ToString()
     {

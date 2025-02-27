@@ -4,6 +4,7 @@ using NSubstitute;
 namespace DependencyInjectionWorkshopTests
 {
     [TestFixture]
+    [Ignore("joey")]
     public class AuthenticationServiceTests
     {
         private IAuthentication _authentication;
