@@ -2,6 +2,9 @@
 
 public class LookupState : BaseTennisState
 {
+    private Dictionary<int, string> _scoreLookup = new Dictionary<int, string>()
+        { { 0, "love" }, { 1, "fifteen" }, { 2, "thirty" }, };
+
     public LookupState(TennisBox tennisBox) : base(tennisBox)
     {
     }
@@ -13,8 +16,6 @@ public class LookupState : BaseTennisState
 
     public override string Score()
     {
-        var scoreLookup = new Dictionary<int, string>() { { 0, "love" }, { 1, "fifteen" }, { 2, "thirty" }, };
-
-        return $"{scoreLookup[_tennisBox._firstPlayerScore]} {scoreLookup[_tennisBox._secondPlayerScore]}";
+        return $"{_scoreLookup[_tennisBox._firstPlayerScore]} {_scoreLookup[_tennisBox._secondPlayerScore]}";
     }
 }
