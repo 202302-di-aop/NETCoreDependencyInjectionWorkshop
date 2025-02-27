@@ -73,6 +73,20 @@ public class TennisBoxTests
         ScoreShouldBe("Joey adv");
     }
 
+    [Test]
+    public void adv_state_to_deuce_state()
+    {
+        GivenDeuce();
+        WhenSecondPlayerGoal();
+        WhenFirstPlayerGoal();
+        ScoreShouldBe("deuce");
+    }
+
+    private void GivenDeuce()
+    {
+        GivenScoreContext(3, 3);
+    }
+
     private void GivenScoreContext(int firstPlayerScore, int secondPlayerScore)
     {
         GivenFirstPlayerScore(firstPlayerScore);

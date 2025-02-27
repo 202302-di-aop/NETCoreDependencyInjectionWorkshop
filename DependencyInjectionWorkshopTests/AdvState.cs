@@ -8,7 +8,7 @@ public class AdvState : BaseTennisState
 
     public override void NextState()
     {
-        throw new NotImplementedException();
+        GoToDeuceState();
     }
 
     public override string Score()
