@@ -21,7 +21,14 @@ public class LookupState : BaseTennisState
         }
         else
         {
-            GoToLookupState();
+            if (_tennisBox._firstPlayerScore > 3 || _tennisBox._secondPlayerScore > 3)
+            {
+                GoToWinState();
+            }
+            else
+            {
+                GoToLookupState();
+            }
         }
     }
 
