@@ -1,20 +1,30 @@
 ﻿namespace DependencyInjectionWorkshopTests;
 
-public class AllState
+public abstract class BaseTennisState
 {
     protected readonly TennisBox _tennisBox;
 
-    public AllState(TennisBox tennisBox)
+    protected BaseTennisState(TennisBox tennisBox)
     {
         _tennisBox = tennisBox;
     }
 
-    public void NextState()
+    public abstract void NextState();
+    public abstract string Score();
+}
+
+public class AllState : BaseTennisState
+{
+    public AllState(TennisBox tennisBox) : base(tennisBox)
+    {
+    }
+
+    public override void NextState()
     {
         _tennisBox.ChangeState(new LookupState(_tennisBox));
     }
 
-    public virtual string Score()
+    public override string Score()
     {
         if (_tennisBox._firstPlayerScore == 1)
         {
