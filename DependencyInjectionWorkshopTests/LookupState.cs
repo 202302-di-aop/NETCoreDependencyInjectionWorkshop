@@ -13,15 +13,8 @@ public class LookupState : BaseTennisState
 
     public override string Score()
     {
-        var scoreLookup = new Dictionary<int, string>()
-        {
-            { 1, "fifteen" },
-        };
-        if (_tennisBox._firstPlayerScore == 2)
-        {
-            return $"thirty {scoreLookup[_tennisBox._secondPlayerScore]}";
-        }
+        var scoreLookup = new Dictionary<int, string>() { { 0, "love" }, { 1, "fifteen" }, { 2, "thirty" }, };
 
-        return "fifteen love";
+        return $"{scoreLookup[_tennisBox._firstPlayerScore]} {scoreLookup[_tennisBox._secondPlayerScore]}";
     }
 }
