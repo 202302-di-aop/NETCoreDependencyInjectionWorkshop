@@ -5,8 +5,8 @@ public class TennisBox
     private BaseTennisState _currentState;
     private string _firstPlayerName;
     public int _firstPlayerScore;
-    public int _secondPlayerScore;
     private string _secondPlayerName;
+    public int _secondPlayerScore;
 
     public TennisBox(string firstPlayerName, string secondPlayerName)
     {
@@ -26,9 +26,21 @@ public class TennisBox
         _currentState.NextState();
     }
 
+    public string GetAdvPlayer()
+    {
+        return _firstPlayerScore > _secondPlayerScore
+            ? GetFirstPlayerName()
+            : GetSecondPlayerName();
+    }
+
     public string GetFirstPlayerName()
     {
         return _firstPlayerName;
+    }
+
+    public string GetSecondPlayerName()
+    {
+        return _secondPlayerName;
     }
 
     public string Score()
@@ -40,10 +52,5 @@ public class TennisBox
     {
         _secondPlayerScore++;
         _currentState.NextState();
-    }
-
-    public string GetSecondPlayerName()
-    {
-        return _secondPlayerName;
     }
 }
