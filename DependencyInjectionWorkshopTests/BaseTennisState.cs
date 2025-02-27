@@ -4,6 +4,9 @@ public abstract class BaseTennisState
 {
     protected readonly TennisBox _tennisBox;
 
+    protected Dictionary<int, string> _scoreLookup = new Dictionary<int, string>()
+        { { 0, "love" }, { 1, "fifteen" }, { 2, "thirty" }, };
+
     protected BaseTennisState(TennisBox tennisBox)
     {
         _tennisBox = tennisBox;

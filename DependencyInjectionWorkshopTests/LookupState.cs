@@ -2,9 +2,6 @@
 
 public class LookupState : BaseTennisState
 {
-    private Dictionary<int, string> _scoreLookup = new Dictionary<int, string>()
-        { { 0, "love" }, { 1, "fifteen" }, { 2, "thirty" }, };
-
     public LookupState(TennisBox tennisBox) : base(tennisBox)
     {
     }
