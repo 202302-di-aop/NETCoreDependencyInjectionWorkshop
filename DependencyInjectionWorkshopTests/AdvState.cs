@@ -2,13 +2,13 @@
 
 public class AdvState : BaseTennisState
 {
-    public AdvState(TennisBox tennisBox) : base(tennisBox)
+    public AdvState(ITennisBoxContext tennisBoxContext) : base(tennisBoxContext)
     {
     }
 
     public override void NextState()
     {
-        if (_tennisBox._firstPlayerScore == _tennisBox._secondPlayerScore)
+        if (TennisBoxContext.FirstPlayerScore == TennisBoxContext.SecondPlayerScore)
         {
             GoToDeuceState();
         }
@@ -21,6 +21,6 @@ public class AdvState : BaseTennisState
 
     public override string Score()
     {
-        return $"{_tennisBox.GetAdvPlayer()} adv";
+        return $"{TennisBoxContext.GetAdvPlayer()} adv";
     }
 }

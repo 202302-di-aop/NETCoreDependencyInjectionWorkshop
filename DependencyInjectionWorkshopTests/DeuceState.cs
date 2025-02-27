@@ -2,7 +2,7 @@
 
 public class DeuceState : BaseTennisState
 {
-    public DeuceState(TennisBox tennisBox) : base(tennisBox)
+    public DeuceState(ITennisBoxContext tennisBoxContext) : base(tennisBoxContext)
     {
     }
 

@@ -2,15 +2,15 @@
 
 public class LookupState : BaseTennisState
 {
-    public LookupState(TennisBox tennisBox) : base(tennisBox)
+    public LookupState(ITennisBoxContext tennisBoxContext) : base(tennisBoxContext)
     {
     }
 
     public override void NextState()
     {
-        if (_tennisBox._firstPlayerScore == _tennisBox._secondPlayerScore)
+        if (TennisBoxContext.FirstPlayerScore == TennisBoxContext.SecondPlayerScore)
         {
-            if (_tennisBox._firstPlayerScore >= 3)
+            if (TennisBoxContext.FirstPlayerScore >= 3)
             {
                 GoToDeuceState();
             }
@@ -21,7 +21,7 @@ public class LookupState : BaseTennisState
         }
         else
         {
-            if (_tennisBox._firstPlayerScore > 3 || _tennisBox._secondPlayerScore > 3)
+            if (TennisBoxContext.FirstPlayerScore > 3 || TennisBoxContext.SecondPlayerScore > 3)
             {
                 GoToWinState();
             }
@@ -34,6 +34,6 @@ public class LookupState : BaseTennisState
 
     public override string Score()
     {
-        return $"{_scoreLookup[_tennisBox._firstPlayerScore]} {_scoreLookup[_tennisBox._secondPlayerScore]}";
+        return $"{_scoreLookup[TennisBoxContext.FirstPlayerScore]} {_scoreLookup[TennisBoxContext.SecondPlayerScore]}";
     }
 }

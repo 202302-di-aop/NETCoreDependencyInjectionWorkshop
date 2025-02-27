@@ -2,7 +2,7 @@
 
 public class WinState : BaseTennisState
 {
-    public WinState(TennisBox tennisBox) : base(tennisBox)
+    public WinState(ITennisBoxContext tennisBoxContext) : base(tennisBoxContext)
     {
     }
 
@@ -13,6 +13,6 @@ public class WinState : BaseTennisState
 
     public override string Score()
     {
-        return $"{_tennisBox.GetAdvPlayer()} win";
+        return $"{TennisBoxContext.GetAdvPlayer()} win";
     }
 }

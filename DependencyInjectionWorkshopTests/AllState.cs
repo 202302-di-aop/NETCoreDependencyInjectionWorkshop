@@ -2,7 +2,7 @@
 
 public class AllState : BaseTennisState
 {
-    public AllState(TennisBox tennisBox) : base(tennisBox)
+    public AllState(ITennisBoxContext tennisBoxContext) : base(tennisBoxContext)
     {
     }
 
@@ -13,6 +13,6 @@ public class AllState : BaseTennisState
 
     public override string Score()
     {
-        return $"{_scoreLookup[_tennisBox._firstPlayerScore]} all";
+        return $"{_scoreLookup[TennisBoxContext.FirstPlayerScore]} all";
     }
 }

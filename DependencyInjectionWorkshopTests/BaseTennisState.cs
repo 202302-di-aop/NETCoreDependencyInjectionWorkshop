@@ -2,7 +2,7 @@
 
 public abstract class BaseTennisState
 {
-    protected readonly TennisBox _tennisBox;
+    protected readonly ITennisBoxContext TennisBoxContext;
 
     protected Dictionary<int, string> _scoreLookup = new Dictionary<int, string>()
     {
@@ -12,9 +12,9 @@ public abstract class BaseTennisState
         { 3, "forty" },
     };
 
-    protected BaseTennisState(TennisBox tennisBox)
+    protected BaseTennisState(ITennisBoxContext tennisBoxContext)
     {
-        _tennisBox = tennisBox;
+        TennisBoxContext = tennisBoxContext;
     }
 
     public abstract void NextState();
@@ -22,26 +22,26 @@ public abstract class BaseTennisState
 
     protected void GoToAdvState()
     {
-        _tennisBox.ChangeState(new AdvState(_tennisBox));
+        TennisBoxContext.ChangeState(new AdvState(TennisBoxContext));
     }
 
     protected void GoToAllState()
     {
-        _tennisBox.ChangeState(new AllState(_tennisBox));
+        TennisBoxContext.ChangeState(new AllState(TennisBoxContext));
     }
 
     protected void GoToDeuceState()
     {
-        _tennisBox.ChangeState(new DeuceState(_tennisBox));
+        TennisBoxContext.ChangeState(new DeuceState(TennisBoxContext));
     }
 
     protected void GoToLookupState()
     {
-        _tennisBox.ChangeState(new LookupState(_tennisBox));
+        TennisBoxContext.ChangeState(new LookupState(TennisBoxContext));
     }
 
     protected void GoToWinState()
     {
-        _tennisBox.ChangeState(new WinState(_tennisBox));
+        TennisBoxContext.ChangeState(new WinState(TennisBoxContext));
     }
 }
