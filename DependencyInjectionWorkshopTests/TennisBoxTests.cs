@@ -20,6 +20,7 @@ public class TennisBoxTests
     [Test]
     public void all_state_to_lookup_state_from_0_0_to_1_0()
     {
+        GivenScoreContext(0, 0);
         WhenFirstPlayerGoal();
         ScoreShouldBe("fifteen love");
     }
@@ -27,7 +28,7 @@ public class TennisBoxTests
     [Test]
     public void lookup_state_to_all_state_from_1_0_to_1_1()
     {
-        GivenFirstPlayerScore(1);
+        GivenScoreContext(1, 0);
         WhenSecondPlayerGoal();
         ScoreShouldBe("fifteen all");
     }
@@ -35,10 +36,15 @@ public class TennisBoxTests
     [Test]
     public void all_state_to_lookup_state_from_1_1_to_2_1()
     {
-        GivenFirstPlayerScore(1);
-        GivenSecondPlayerScore(1);
+        GivenScoreContext(1, 1);
         WhenFirstPlayerGoal();
         ScoreShouldBe("thirty fifteen");
+    }
+
+    private void GivenScoreContext(int firstPlayerScore, int secondPlayerScore)
+    {
+        GivenFirstPlayerScore(firstPlayerScore);
+        GivenSecondPlayerScore(secondPlayerScore);
     }
 
     private void GivenSecondPlayerScore(int score)
