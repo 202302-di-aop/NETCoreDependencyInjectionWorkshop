@@ -1,18 +1,5 @@
 ﻿namespace DependencyInjectionWorkshopTests;
 
-public abstract class BaseTennisState
-{
-    protected readonly TennisBox _tennisBox;
-
-    protected BaseTennisState(TennisBox tennisBox)
-    {
-        _tennisBox = tennisBox;
-    }
-
-    public abstract void NextState();
-    public abstract string Score();
-}
-
 public class AllState : BaseTennisState
 {
     public AllState(TennisBox tennisBox) : base(tennisBox)
@@ -32,10 +19,5 @@ public class AllState : BaseTennisState
         }
 
         return "love all";
-    }
-
-    private void GoToLookupState()
-    {
-        _tennisBox.ChangeState(new LookupState(_tennisBox));
     }
 }
