@@ -30,7 +30,6 @@ public class TennisBox
     public void SecondPlayerGoal()
     {
         _secondPlayerScore++;
-        //todo: should use _currentState
         _currentState.NextState();
     }
 }

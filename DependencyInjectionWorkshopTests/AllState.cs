@@ -13,11 +13,6 @@ public class AllState : BaseTennisState
 
     public override string Score()
     {
-        if (_tennisBox._firstPlayerScore == 1)
-        {
-            return "fifteen all";
-        }
-
-        return "love all";
+        return $"{_scoreLookup[_tennisBox._firstPlayerScore]} all";
     }
 }
