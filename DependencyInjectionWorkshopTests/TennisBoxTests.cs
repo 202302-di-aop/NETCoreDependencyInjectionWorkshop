@@ -91,6 +91,14 @@ public class TennisBoxTests
         ScoreShouldBe("Joey win");
     }
 
+    [Test]
+    public void lookup_state_to_win_state()
+    {
+        GivenScoreContext(3, 1);
+        WhenFirstPlayerGoal();
+        ScoreShouldBe("Matt win");
+    }
+
     private void GivenDeuce()
     {
         GivenScoreContext(3, 3);
